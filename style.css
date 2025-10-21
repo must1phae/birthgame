@@ -1,0 +1,721 @@
+:root {
+    --cake-base-color: #f7a39d; /* Soft Peach-Pink */
+    --cake-darker-color: #e08c86;
+    --icing-color: #fcebeb; /* Off-white / Cream */
+    --plate-color: #d1b199; /* Light Brown / Tan */
+    --candle-color: #a87d6d; /* Muted brown */
+    --flame-color-inner: #ffd700; /* Gold */
+    --flame-color-outer: #ff8c00; /* Dark Orange */
+    --text-color-hb: #ff6eb0; /* Brighter Hot Pink */
+    --text-color-name: #ffe4e1; /* Misty Rose */
+    --bg-gradient-start: #2a003f; /* Deep Purple */
+    --bg-gradient-end: #000000; /* Black */
+
+    /* Responsive scaling factor */
+    --scale-factor: 1; /* Default for larger screens */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.03), transparent 10%),
+                radial-gradient(circle at 90% 90%, rgba(255,255,255,0.02), transparent 10%),
+                linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    margin: 0;
+    overflow: hidden; /* To prevent scrollbars from confetti */
+    color: #e0e0e0;
+}
+
+.main-wrapper {
+     display: flex;
+     
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    position: relative; /* For confetti */
+}
+
+/* Card container for fold/unfold animation */
+.card {
+    perspective: 1200px; /* enable 3D space for children */
+}
+.card .container.initial-state {
+    transform-origin: top center;
+    transition: transform 0.9s cubic-bezier(0.2, 1, 0.22, 1), opacity 0.5s ease;
+    backface-visibility: hidden;
+}
+.card.open .container.initial-state {
+    transform: rotateX(-88deg) translateY(-10px) scale(0.98);
+    opacity: 0;
+}
+
+/* When card opens, reveal cake scene with a subtle 3D pop */
+.cake-container {
+    transform-style: preserve-3d;
+}
+.cake-scene {
+    transition: transform 0.9s cubic-bezier(0.2, 1, 0.22, 1), box-shadow 0.6s ease;
+    transform: translateZ(0) rotateX(0deg) scale(var(--scale-factor));
+    will-change: transform;
+}
+.cake-container.animate .cake-scene {
+    transform: translateZ(60px) rotateX(-6deg) scale(var(--scale-factor));
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+}
+
+.container.initial-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    padding: 40px 60px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: opacity 0.5s ease; /* For smooth hide */
+}
+
+/* Input for recipient name */
+input#recipientInput {
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background-color: rgba(255,255,255,0.03);
+    color: #fff;
+    width: 260px;
+    max-width: 80%;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+input#recipientInput:focus {
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.12);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+/* Subtle pulsing effect for the button to make it more inviting */
+button {
+    animation: pulse 2.4s infinite ease-in-out;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 4px 15px rgba(255, 99, 71, 0.35); transform: translateY(0); }
+    50% { box-shadow: 0 12px 35px rgba(255, 99, 71, 0.25); transform: translateY(-3px) scale(1.01); }
+    100% { box-shadow: 0 4px 15px rgba(255, 99, 71, 0.35); transform: translateY(0); }
+}
+
+/* Floating hearts decorative container */
+.hearts-container {
+    position: fixed;
+    pointer-events: none;
+    inset: 0;
+    overflow: hidden;
+    z-index: 5;
+}
+.heart {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    transform: translateY(0) rotate(0deg);
+    background: linear-gradient(45deg, #ff6eb0, #ff8c00);
+    clip-path: path('M10 3 C10 1 8 0 6 0 C4 0 2 1 2 3 C2 6 10 10 10 10 C10 10 18 6 18 3 C18 1 16 0 14 0 C12 0 10 1 10 3 Z');
+    opacity: 0.95;
+}
+.heart.small { width: 12px; height: 12px; }
+.heart.big { width: 28px; height: 28px; }
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+}
+
+/* make initial-state card slightly translucent on mobile */
+@media (max-width: 480px) {
+    .container.initial-state { padding: 18px 22px; }
+    input#recipientInput { width: 200px; }
+}
+
+h1 {
+    color: #f8f8f8;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+button {
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 25px;
+    font-size: 1.15em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    outline: none;
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.4);
+}
+
+button:hover {
+    background-color: #e0523a;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 99, 71, 0.6);
+}
+
+/* Cake Container to hold cake and text, for better centering */
+.cake-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    max-width: 400px; /* Limit max width on large screens */
+    height: 100%;
+    max-height: 500px; /* Limit max height */
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+.cake-container.hidden { display: none; }
+.cake-container.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.cake-scene {
+    position: relative;
+    width: calc(280px * var(--scale-factor)); /* Scale cake dimensions */
+    height: calc(300px * var(--scale-factor));
+    margin-top: 20px; /* Space between text and cake */
+    transform-origin: bottom center; /* Scale from bottom */
+    transform: scale(var(--scale-factor)); /* Apply overall scale */
+}
+
+/* Base styles for cake elements (initially hidden/small) */
+.plate, .cake-layer, .icing, .candle-stem, .flame {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+
+/* All cake dimensions are now multiplied by --scale-factor in JS for better responsiveness */
+/* Keep these values as "base" values, JS will adjust with --scale-factor */
+.plate {
+    width: 220px;
+    height: 12px;
+    background-color: var(--plate-color);
+    border-radius: 6px;
+    bottom: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cake-layer {
+    width: 180px;
+    height: 35px;
+    background-color: var(--cake-base-color);
+    border-radius: 8px;
+    box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cake-layer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 8px 8px 0 0;
+}
+
+.layer-3 { bottom: 12px; width: 200px; background-color: var(--cake-darker-color); }
+.layer-2 { bottom: 47px; width: 160px; }
+.layer-1 { bottom: 82px; width: 120px; background-color: var(--cake-darker-color); }
+
+.icing {
+    width: 125px;
+    height: 15px;
+    background-color: var(--icing-color);
+    border-radius: 10px;
+    bottom: 115px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.candle-stem {
+    width: 6px;
+    height: 40px;
+    background-color: var(--candle-color);
+    border-radius: 3px;
+    bottom: 130px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.flame {
+    width: 12px;
+    height: 18px;
+    background: radial-gradient(circle at 50% 50%, var(--flame-color-inner) 0%, var(--flame-color-outer) 70%, transparent 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 0 0 15px 5px var(--flame-color-outer), 0 0 25px 8px rgba(255, 140, 0, 0.5);
+    bottom: 165px;
+    filter: blur(1px);
+    transform-origin: bottom center;
+}
+
+/* Happy Birthday and Recipient Name - positioned above the cake */
+.happy-birthday-text, .recipient-name {
+    position: relative; /* Changed from absolute to relative to flow with content */
+    left: auto; /* Reset left */
+    transform: none; /* Reset transform */
+    font-family: 'Brush Script MT', cursive;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px; /* Space between name and cake */
+    opacity: 0;
+    white-space: nowrap;
+    overflow: hidden; /* For letter animation */
+}
+
+.happy-birthday-text {
+    font-size: 2.8rem; /* Use rem for scalability */
+    font-weight: normal;
+    color: var(--text-color-hb);
+    margin-bottom: 5px;
+}
+.recipient-name {
+    font-size: 1.8rem; /* Use rem for scalability */
+    color: var(--text-color-name);
+}
+
+
+/* Sprinkles */
+.sprinkles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    border-radius: inherit;
+}
+.sprinkles::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="2" cy="2" r="1" fill="%23fff" opacity="0.6" /><circle cx="7" cy="7" r="1" fill="%23f0f" opacity="0.6" /><circle cx="2" cy="7" r="1" fill="%230ff" opacity="0.6" /><circle cx="7" cy="2" r="1" fill="%23ff0" opacity="0.6" /></svg>');
+    background-size: 10px 10px;
+    animation: sprinkleFadeIn 1s forwards ease-out;
+}
+
+@keyframes sprinkleFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+/* --- Animation Classes (added by JS) --- */
+
+/* Cake layers and elements now animate using their original dimensions, 
+   the overall cake-scene is scaled. */
+.cake-scene .plate.animated { animation: popIn 0.6s 0.3s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+.cake-scene .layer-3.animated { animation: popIn 0.6s 0.7s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+.cake-scene .layer-2.animated { animation: popIn 0.6s 1.1s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+.cake-scene .layer-1.animated { animation: popIn 0.6s 1.5s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+.cake-scene .icing.animated { animation: popIn 0.6s 1.9s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+.cake-scene .candle-stem.animated { animation: popIn 0.6s 2.3s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+.cake-scene .flame.animated { animation: popIn 0.4s 2.7s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55), flicker 1.2s 3s infinite alternate; }
+
+
+/* Animation for text */
+.happy-birthday-text.animated { animation: textBounceIn 1.2s 3.5s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+.recipient-name.animated { animation: textBounceIn 1.2s 3.8s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+
+/* New keyframes for text bounce */
+@keyframes textBounceIn {
+    0% { opacity: 0; transform: scale(0.5); }
+    70% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popIn {
+    0% { opacity: 0; transform: translate(-50%, 50px) scale(0.6); }
+    70% { opacity: 1; transform: translate(-50%, -10px) scale(1.08); }
+    100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+@keyframes flicker {
+    0%   { opacity: 0.8; transform: translate(-50%, 0) scaleX(1); box-shadow: 0 0 15px 5px var(--flame-color-outer), 0 0 25px 8px rgba(255, 140, 0, 0.5); }
+    50%  { opacity: 1; transform: translate(-50%, -2px) scaleX(1.05) scaleY(1.03); box-shadow: 0 0 20px 8px var(--flame-color-outer), 0 0 35px 12px rgba(255, 140, 0, 0.7); }
+    100% { opacity: 0.9; transform: translate(-50%, 0) scaleX(0.98); box-shadow: 0 0 15px 5px var(--flame-color-outer), 0 0 25px 8px rgba(255, 140, 0, 0.5); }
+}
+
+
+/* Confetti Styles and Animations */
+.confetti-container {
+    position: fixed; /* Fixed so it covers the whole viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--confetti-color);
+    border-radius: 50%;
+    opacity: 0;
+    animation: fall 3s forwards ease-out;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+}
+
+@keyframes fall {
+    0% {
+        transform: translate(var(--x-start), -100px) rotateZ(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--x-end), 100vh) rotateZ(720deg);
+        opacity: 0;
+    }
+}
+
+/* Individual letter animation for Happy Birthday */
+.happy-birthday-text.animated-letters .hb-letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+    animation: bounceInLetter 0.6s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    /* Individual delays set via JS for better control */
+}
+.hb-space { display: inline-block; width: 0.5em; } /* Keep space visible */
+
+@keyframes bounceInLetter {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.8);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(5px) scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container.initial-state {
+        padding: 30px 40px;
+    }
+    h1 {
+        font-size: 1.5em;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    
+
+    .happy-birthday-text {
+        font-size: 2rem;
+    }
+    .recipient-name {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container.initial-state {
+        padding: 20px 30px;
+    }
+    h1 {
+        font-size: 1.2em;
+    }
+    button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+    .happy-birthday-text {
+        font-size: 1.8rem;
+    }
+    .recipient-name {
+        font-size: 1.2rem;
+    }
+}
+
+/* Paper modal for personal message */
+.paper-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.45);
+    z-index: 50;
+    transition: opacity 0.4s ease;
+}
+.paper-container.hidden { display: none; }
+.paper {
+    background: linear-gradient(180deg, #ffffff 0%, #fffaf0 100%);
+    width: min(780px, 92%);
+    max-width: 780px;
+    padding: 28px;
+    border-radius: 8px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    transform: translateY(20px) scale(0.98);
+    animation: paperIn 0.6s cubic-bezier(0.2,1,0.22,1) forwards;
+}
+.paper h2 {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-family: 'Georgia', serif;
+}
+.love-view {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.85rem;
+    color: #2b2b2b;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    min-height: 160px;
+    opacity: 0;
+}
+.love-view.revealed { opacity: 1; }
+
+/* handwriting reveal using a mask-like effect */
+.love-view span.char {
+    display: inline-block;
+    transform: translateY(6px) rotate(-2deg);
+    opacity: 0;
+}
+.love-view span.char.show {
+    animation: charIn 0.05s forwards ease-in;
+}
+@keyframes charIn {
+    0% { opacity: 0; transform: translateY(6px) rotate(-2deg) scaleY(1.08); }
+    100% { opacity: 1; transform: translateY(0) rotate(0deg) scaleY(1); }
+}
+.paper textarea#loveMessage {
+    width: 100%;
+    min-height: 220px;
+    padding: 12px 14px;
+    font-size: 1.05rem;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 6px;
+    resize: vertical;
+    box-shadow: inset 0 6px 18px rgba(0,0,0,0.03);
+}
+.paper-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    justify-content: flex-end;
+}
+.paper-actions button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(180deg, #ff8cba, #ff6ea3);
+    color: white;
+}
+.paper-actions button#closePaperBtn { background: #ddd; color: #222; }
+
+@keyframes paperIn {
+    0% { opacity: 0; transform: translateY(30px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Pen for signature animation */
+.pen {
+    position: absolute;
+    right: 36px;
+    bottom: 26px;
+    width: 48px;
+    height: 48px;
+    transform: translate3d(0,0,0) rotate(10deg) scale(0.9);
+    opacity: 0;
+    transition: transform 0.9s cubic-bezier(0.2,1,0.22,1), opacity 0.3s ease;
+    pointer-events: none;
+}
+.pen.visible { opacity: 1; }
+.pen.moving { transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* Signature SVG styles */
+.signature-svg {
+    position: absolute;
+    left: 36px;
+    right: 36px;
+    bottom: 20px;
+    height: 110px;
+    width: calc(100% - 72px);
+    overflow: visible;
+    pointer-events: none;
+}
+.signature-path {
+    stroke: #2b2b2b;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    transition: stroke-dashoffset 1.2s ease-in-out;
+}
+.signature-path.revealed { stroke-dashoffset: 0; }
+.paper textarea#loveMessage.hidden { display: none; }
+
+/* ====== Responsive Design ====== */
+
+/* Large screens (laptops/desktops, 1200px and up) */
+@media screen and (min-width: 1200px) {
+    .cake-container {
+        max-width: 500px;
+    }
+    .paper {
+        width: 780px;
+        padding: 40px;
+    }
+    .love-view {
+        font-size: 2rem;
+    }
+    .happy-birthday-text {
+        font-size: 3.2rem;
+    }
+    .recipient-name {
+        font-size: 2.2rem;
+    }
+}
+
+/* Medium screens (tablets/smaller laptops, between 768px and 1199px) */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+    .cake-container {
+        max-width: 400px;
+    }
+    .paper {
+        width: 85%;
+        padding: 32px;
+    }
+    .love-view {
+        font-size: 1.85rem;
+    }
+    .happy-birthday-text {
+        font-size: 2.8rem;
+    }
+    .recipient-name {
+        font-size: 1.8rem;
+    }
+}
+
+/* Small screens (phones, less than 768px) */
+@media screen and (max-width: 767px) {
+    .cake-container {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    .cake-scene {
+        transform: scale(0.8);
+    }
+    .paper {
+        width: 92%;
+        padding: 20px;
+        margin: 16px;
+    }
+    .love-view {
+        font-size: 1.6rem;
+        line-height: 1.4;
+    }
+    .happy-birthday-text {
+        font-size: 2.2rem;
+        margin-bottom: 8px;
+    }
+    .recipient-name {
+        font-size: 1.5rem;
+    }
+    .paper-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .paper-actions button {
+        width: 100%;
+        padding: 12px;
+    }
+    /* Adjust signature for mobile */
+    .signature-svg {
+        height: 80px;
+        bottom: 15px;
+        left: 20px;
+        right: 20px;
+        width: calc(100% - 40px);
+    }
+}
+
+/* Very small screens and landscape orientation fixes */
+@media screen and (max-width: 480px), (max-height: 600px) {
+    .container.initial-state {
+        padding: 16px;
+    }
+    .cake-scene {
+        transform: scale(0.7);
+    }
+    h1 {
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+    }
+    input#recipientInput {
+        width: 200px;
+        padding: 8px 12px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Landscape orientation specific adjustments */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    .main-wrapper {
+        height: auto;
+        min-height: 100vh;
+        padding: 20px 0;
+    }
+    .cake-container {
+        margin: 20px auto;
+    }
+    .paper {
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    .happy-birthday-text {
+        font-size: 2rem;
+    }
+    .recipient-name {
+        font-size: 1.4rem;
+    }
+}
+
+/* High DPI screens (retina displays) */
+@media screen and (-webkit-min-device-pixel-ratio: 2), 
+       screen and (min-resolution: 192dpi) {
+    .cake-scene, .love-view, .signature-path {
+        will-change: transform;
+    }
+}

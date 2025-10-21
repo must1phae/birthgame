@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Animated Birthday Cake</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div class="card">
+            <div class="container initial-state">
+                <h1>Prêt pour une surprise ?</h1>
+                <label for="recipientInput" class="visually-hidden">Entrez votre nom</label>
+                <input id="recipientInput" type="text" placeholder="Entrez votre nom" />
+                <button id="startAnimationBtn">Clique ici !</button>
+            </div>
+        </div>
+
+        <div class="cake-container hidden">
+            <div class="happy-birthday-text">
+                <span class="hb-letter">h</span><span class="hb-letter">a</span><span class="hb-letter">p</span><span class="hb-letter">p</span><span class="hb-letter">y</span>
+                <span class="hb-space"> </span>
+                <span class="hb-letter">b</span><span class="hb-letter">i</span><span class="hb-letter">r</span><span class="hb-letter">t</span><span class="hb-letter">h</span><span class="hb-letter">d</span><span class="hb-letter">a</span><span class="hb-letter">y</span><span class="hb-letter">!</span>
+            </div>
+            <div class="recipient-name">Lovie</div>
+
+            <div class="cake-scene">
+                <div class="plate"></div>
+                <div class="cake-layer layer-3">
+                    <div class="sprinkles"></div>
+                </div>
+                <div class="cake-layer layer-2">
+                    <div class="sprinkles"></div>
+                </div>
+                <div class="cake-layer layer-1">
+                    <div class="sprinkles"></div>
+                </div>
+                <div class="icing"></div>
+                <div class="candle-stem"></div>
+                <div class="flame"></div>
+            </div>
+        </div>
+        <!-- Confetti container -->
+        <div class="confetti-container"></div>
+    </div>
+
+    <!-- Floating hearts (decorative) -->
+    <div class="hearts-container" aria-hidden="true"></div>
+
+        <!-- Paper for personal message (hidden until cake animation completes) -->
+        <div class="paper-container hidden" role="dialog" aria-modal="true" aria-hidden="true">
+            <div class="paper">
+                <h2>Un message pour toi</h2>
+                <!-- Handwritten view (readonly, animated) with prewritten message -->
+                <div id="loveMessageView" class="love-view" aria-hidden="true">Mon amour,
+
+Joyeux anniversaire ! Tu remplis ma vie de lumière, de rires et de chaleur. Chaque jour passé à tes côtés est un cadeau — j'espère que cette journée sera aussi belle que toi.
+
+Je t'aime plus que les mots peuvent le dire.
+
+Avec tout mon amour,
+—</div>
+
+                <div class="paper-actions">
+                    <button id="closePaperBtn">Fermer</button>
+                </div>
+                <!-- Pen SVG for signature animation -->
+                <div class="pen" aria-hidden="true">
+                    <!-- simple pen nib SVG -->
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 22l1.5-4L17 4.5 19.5 7 5 21.5 2 22z" fill="#3a3a3a"/>
+                        <path d="M14 3l6 6" stroke="#b33" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <!-- SVG signature path (hidden until animation) -->
+                <svg class="signature-svg" viewBox="0 0 600 200" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+                    <path id="signaturePath" class="signature-path" d="M50 140 C120 80, 180 200, 240 140 S360 80, 430 140 S520 200, 560 140" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
