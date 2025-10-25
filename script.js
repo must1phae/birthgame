@@ -198,13 +198,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const closeBtn = document.getElementById('closePaperBtn');
 
-        // Display the handwritten view immediately (no per-character animation)
+        // Display the handwritten view immediately with the recipient's name
         if (view) {
             const raw = view.textContent || '';
+            const recipientName = document.getElementById('recipientInput').value.trim() || 'amie';
+            // Replace the placeholder with the actual name
+            const personalizedMessage = raw.replace('${name}', recipientName);
             // Put the full text directly into the view and mark revealed
             view.innerHTML = '';
             // Use textContent to preserve line breaks
-            view.textContent = raw;
+            view.textContent = personalizedMessage;
             view.classList.add('revealed');
             // Trigger signature shortly after (300ms) so the user can see the message
             setTimeout(() => animateSignature(), 300);
@@ -303,13 +306,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /* Simple WebAudio melody (short arpeggio) */
+    /* Happy Birthday melody synchronized with cake animation */
     function playMelody() {
         const ctx = ensureAudioContext();
         if (!ctx) return;
         const now = ctx.currentTime;
 
-        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+        // Happy Birthday notes frequencies
+        const notes = [
+            // Happy
+            [392.00], // G4
+            [392.00], // G4
+            [440.00], // A4
+            [392.00], // G4
+            [523.25], // C5
+            [493.88], // B4
+            
+            // Birth
+            [392.00], // G4
+            [392.00], // G4
+            [440.00], // A4
+            [392.00], // G4
+            [587.33], // D5
+            [523.25], // C5
+
+            // day
+            [392.00], // G4
+            [392.00], // G4
+            [783.99], // G5
+            [659.26], // E5
+            [523.25], // C5
+            [493.88], // B4
+            [440.00], // A4
+
+            // to
+            [698.46], // F5
+            [698.46], // F5
+            [659.26], // E5
+            [523.25], // C5
+            [587.33], // D5
+            [523.25]  // C5
+        ];
+
+        const noteTimings = [
+            0, 0.5, 1, 1.5, 2, 3,      // Happy
+            4, 4.5, 5, 5.5, 6, 7,      // Birth
+            8, 8.5, 9, 9.5, 10, 10.5, 11, // day
+            12, 12.5, 13, 13.5, 14, 15    // to you
+        ];
+
         notes.forEach((freq, i) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -319,15 +364,18 @@ document.addEventListener('DOMContentLoaded', () => {
             osc.connect(gain);
             gain.connect(ctx.destination);
 
-            const start = now + i * 0.18;
-            const dur = 0.38;
+            const start = now + noteTimings[i];
+            const dur = 0.4;
             gain.gain.setValueAtTime(0, start);
-            gain.gain.linearRampToValueAtTime(0.12, start + 0.02);
+            gain.gain.linearRampToValueAtTime(0.15, start + 0.02);
             gain.gain.linearRampToValueAtTime(0, start + dur);
 
             osc.start(start);
             osc.stop(start + dur + 0.02);
         });
+
+        // Start a new loop of the melody after it finishes
+        setTimeout(() => playMelody(), noteTimings[noteTimings.length - 1] * 1000 + 1000);
     }
 
     // Small pen tick sound to simulate writing
